@@ -1,0 +1,101 @@
+== Metadata
+[cols="1h,1"]
+|===
+| CIP
+| 1
+
+| Title
+| Celesta Improvement Proposal Format
+
+| Author
+//link to GitHub user page
+| link:https://github.com/inponomarev[inponomarev]
+
+
+| Created
+| 2019-05-22
+
+
+| Status
+| discussion
+
+| Discussion
+//link to Google Group discussion thread
+| N/A
+
+
+| JIRA
+| N/A
+
+|===
+
+== Motivation
+ 
+Since Celesta Project is acquiring larger user base, it becomes impossible for any single person to control all the aspects of its possible usage. 
+Any compatibility-breaking changes in Celesta, although desirable for some users, can be harmful for others.
+
+Thus a wide discussion of every change is needed in such a way that different Celesta users' needs can be considered and met.
+
+Furthermore, this discussion should facilitate the spread of information about new features of Celesta.
+Not only the immediate authors of the change proposal should benefit from the implementation of their ideas, but as large number of other users as possible.
+
+In order not to miss any interested parties, we should set the formal rules of such discussion: where and how it should be carried out.
+
+Last but not the least: we need a resilient process for Celesta development, not dependent on availability of any single person.
+
+== Proposed Changes
+
+1. Each change that modifies public API or breaks backwards compatibility should pass the CIP process.
+
+2. The change should be formally written in the form of 'CIP' document. This document must be written in .adoc format, and committed to https://github.com/courseorchestra/cip project. If an author of the CIP does not have rights to push to CIP project directly, they can submit their CIP in pull request and request the rights from project owners: in order to simplify the process, rights to CIP project are given away freely.
+
+3. CIP document should be written using the provided template, and must contain the following sections:
+* *Metadata* -- CIP number, title, author, status, links to discussion, related JIRA ticket and so on.
+* *Motivation* -- describes the problem we are trying to solve
+* *Proposed Changes* -- describes the solution for the problem, i. e. the formal specification, according to which the changes must be implemented.
+* *Compatibility, Deprecation, and Migration Plan* -- in case backwards compatibility is broken, all the necessary upgrade steps should be described.
+* *Rejected Alternatives* -- if during the discussion the proposed solution is rejected in favour of another one, the CIP should be rewritten and the rejected solution should be moved in this section.
+
+4. After submitting the CIP, the author of the CIP should start the discussion, by writing approximately the following to https://groups.google.com/forum/#!forum/celesta-dev/ group: 'Hello, I would like to start a discussion for <insert the link to CIP here>. The status of the CIP should be set to *discussion*. Any person can join the discussion.
+
+5. There are to ways to carry out the discussion of CIP:
+* via email on `celesta-dev` group in replies to the initial letter
+* collective Skype/Hangouts call, with concise follow-up sent to `celesta-dev` group. NB: *it is obligatory to send a follow-up for each call* to `celesta-group`, so that any decision made is documented.
+
+6. During the discussion phase either a consensus on how to implement the proposed feature is reached, or the initial proposal is rejected. In the second scenario, the CIP's author should update the CIP and move the rejected ideas into the appropriate section, and then re-initiate the discussion.
+
+7. If the consensus is reached, CIP's author changes status to 'voting'. Only votes from members of Steering Committee is counted. In order to pass the CIP to development, at least three votes from members of Steering Committee is required. If any of the members of Steering Committee is voting against the proposal, it is turned back to the discussion.
+
+8. Sometimes during the discussion it is agreed that the proposed change should not be implemented at all. In this case CIP receives the 'cancelling' status and voting for cancellation starts, with the same rules as voting for implementation.
+
+9. After three members of Steering Committee vote for the CIP's implementation, the CIP is finalized and implementation phase starts. Any changes
+
+10. If new circumstances / difficulties are discovered during the implementation process, the CIP can be returned to 'discussion' phase.
+
+11. When the feature is implemented, the CIP receives 'implemented' status. Most of its 'proposed changes' section should be copied to Celesta User Guide. No further change to the CIP is allowed.
+
+
+.CIP states and transitions
+[plantuml, diagram-state, png]     
+....
+[*] --> discussion : CIP initiated
+
+discussion --> voting : start voting
+discussion --> cancelling : start voting
+voting --> implementation : at least 3 votes for, no votes against
+implementation --> discussion : new circumstances discovered
+voting --> discussion : at least 1 vote against
+cancelling --> discussion : at least 1 vote against
+cancelling --> cancelled : at least 3 votes for, no votes against
+implementation --> implemented : feature is implemented 
+....
+
+
+== Compatibility, Deprecation, and Migration Plan
+
+N/A
+
+
+== Rejected Alternatives
+
+None

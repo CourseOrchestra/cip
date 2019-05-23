@@ -1,0 +1,6 @@
+These are members whose votes are counted during the Celesta Improvement Process (in alphabetical order):
+
+1. https://github.com/anlug1[Andrey Lugovtsov]
+2. https://github.com/inponomarev[Ivan Ponomarev]
+3. https://github.com/fiddlededee[Nikolay Potashnikov]
+4. https://github.com/GingerTe[Maria Prudyvus]

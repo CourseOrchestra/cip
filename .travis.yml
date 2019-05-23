@@ -1,0 +1,29 @@
+---
+dist: xenial
+addons:
+  apt:
+    packages:
+      - graphviz
+
+sudo: required
+
+language: java
+jdk: openjdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+
+script:
+  - mvn generate-resources
+  - errlist=$(for f in $(find . -name '*.adoc'); do    cat $f | aspell --master=en    --personal=./dict list; done)
+  - echo $errlist
+  - [ -z $errlist ]
+  
+after_success:
+  - cd target/generated-docs
+  - git init
+  - git config user.name "${GH_USER_NAME}"
+  - git config user.email "${GH_USER_EMAIL}"
+  - git add . ; git commit -m "Deploy to GitHub Pages"
+  - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:gh-pages > /dev/null 2>&1

@@ -1,0 +1,12 @@
+:source-highlighter: highlightjs
+:toc: left
+
+= Celesta Improvement Process
+
+== Celesta Steering Committee Members
+
+include::steering.adoc[leveloffset=+1]
+
+
+== CIP-1
+include::1/CIP1.adoc[leveloffset=+1]

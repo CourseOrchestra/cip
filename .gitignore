@@ -1,0 +1,7 @@
+target/
+
+#auto-generated images
+src/main/asciidoc/*.png
+
+*.bak
+/src/main/asciidoc/1/diagram-state.png
