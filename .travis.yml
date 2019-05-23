@@ -19,8 +19,8 @@ script:
   - mvn generate-resources
   - errlist=$(for f in $(find . -name '*.adoc'); do    cat $f | aspell --master=en    --personal=./dict list; done)
   - echo $errlist
-  - [ -z $errlist ]
-  
+  - "[ -z $errlist ]"
+
 after_success:
   - cd target/generated-docs
   - git init
