@@ -10,3 +10,6 @@ include::steering.adoc[leveloffset=+1]
 
 == CIP-1
 include::1/CIP1.adoc[leveloffset=+1]
+
+== CIP-2
+include::2/CIP2.adoc[leveloffset=+1]
