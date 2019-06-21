@@ -1,0 +1,74 @@
+== Metadata
+[cols="1h,1"]
+|===
+| CIP
+| 2
+
+| Title
+| Dynamic Data Change for Cursor
+
+| Author
+//link to GitHub user page
+| link:https://github.com/packpaul[packpaul]
+
+
+| Created
+| 2019-06-22
+
+
+| Status
+| discussion
+
+| Discussion
+//link to Google Group discussion thread
+| _TODO:_
+
+
+| JIRA
+| https://jira.curs.ru/browse/PK-227
+
+|===
+
+== Motivation
+
+In course of link:https://github.com/CourseIT/cymbals[Cymbals] project implementation which is using *Celesta* as one if its integral parts, it was noted that Celesta was lacking API for setting dynamically formed testing data to its cursors, for such data were obtained during run-time rather than in a static way. To overcome this problem a workaround solution based on a reflection mechanism of Java had to be provided that neither can cover all desired cases, nor is durable. It is believed that handling of similar use case could have a demand from other projects.
+
+== Proposed Changes
+
+To extend *API* by adding
+
+[source,java]
+----
+BasicCursor.setFieldValue(String fieldName, Object value)
+----
+
+which would perform a type check and set the value.
+
+[source,java]
+----
+Cursor Table.getCursor(CallContext ctx)
+ViewCursor View.getCursor(CallContext ctx)
+Sequence SequenceElement.getSequence(Context ctx)
+ParameterizedViewCursor ParameterizedView.getCursor(Context ctx)
+MaterializedViewCursor MaterializedView.getCursor(Context ctx)
+----
+
+methods for getting appropriate cursors of grain elements.
+
+== Compatibility, Deprecation, and Migration Plan
+
+Since API is extended backwards compatibility is fully preserved.
+
+Methods for working with meta-information in Celesta already exist:
+
+[source,java]
+----
+Grain Score.getGrain(String name)
+T Grain.getElement(String name, Class<T> classOfElement)
+----
+
+they should be used in implementation.
+
+== Rejected Alternatives
+
+None
