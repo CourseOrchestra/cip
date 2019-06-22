@@ -17,7 +17,7 @@ cache:
 
 script:
   - mvn generate-resources
-  - errlist=$(for f in $(find . -name '*.adoc'); do    cat $f | aspell --master=en    --personal=./dict list; done)
+  - errlist=$(for f in $(find . -name '*.adoc'); do    cat $f | aspell --master=en    --personal=./dict --run-together --run-together-limit=4 --run-together-min=2 list; done)
   - echo $errlist
   - "[ -z $errlist ]"
 
