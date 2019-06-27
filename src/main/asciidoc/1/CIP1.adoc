@@ -17,7 +17,7 @@
 
 
 | Status
-| discussion
+| implemented
 
 | Discussion
 //link to Google Group discussion thread
