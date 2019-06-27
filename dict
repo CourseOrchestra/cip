@@ -23,3 +23,9 @@ fieldName
 getCursor
 ctx
 parameterized
+sql
+SQL
+baz
+Intf
+myProc
+CelestaSQL
