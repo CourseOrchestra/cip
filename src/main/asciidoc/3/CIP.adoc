@@ -1,0 +1,101 @@
+== Metadata
+[cols="1h,1"]
+|===
+| CIP
+| 3
+
+| Title
+| Interface specification for cursor classes
+
+| Author
+//link to GitHub user page
+| link:https://github.com/inponomarev[inponomarev]
+
+
+| Created
+| 2019-06-27
+
+
+| Status
+| discussion
+
+| Discussion
+//link to Google Group discussion thread
+| N/A
+
+| JIRA
+| N/A
+
+|===
+
+== Motivation
+
+Sometimes it is useful to have some of the cursor classes implement the common interface, e. g. in situations where different tables have similar subset of columns. E.g. when we want to be able to use a single procedure to process data from different tables, and we want the type of the argument of this procedure to be a common interface.
+
+
+== Proposed Changes
+
+Add the possibility to mark the needed interfaces in CelestaDoc, like following:
+
+[source,sql]
+----
+/**{interfaces: ["ru.curs.project.package.Intf"]}*/ 
+CREATE TABLE T1 (
+  foo int, 
+  bar varchar(10), 
+  baz int);
+----
+
+In this case, the cursor source code generator should generate the cursor class the following way:
+
+[source,java]
+----
+import ru.curs.project.package.Intf;
+class T1Cursor extends BasicCursor implements Intf {
+  ...
+}
+----
+
+
+The `ru.curs.project.package.Intf` should be defined somewhere in a way to be compatible with generated `T1Cursor`, e. g.
+
+[source,java]
+----
+interface Intf {
+    int getFoo();
+    String getBar();
+}
+----
+
+Users then may use intersection types to write the 'universal procedures', like
+
+[source, java]
+----
+<T extends BasicCursor & Intf> void myProc(T cursor){
+    cursor.findFirst(); //inherited from BasicCursor
+    cursor.getFoo(); //inherited from Intf
+}
+----
+
+== Compatibility, Deprecation, and Migration Plan
+
+Since API is extended backwards compatibility is fully preserved.
+
+
+== Rejected Alternatives
+
+Introduction of special `CREATE INTERFACE` construction into CelestaSQL
+
+[source,sql]
+----
+CREATE INTERFACE Intf (foo int, bar varchar(10));
+
+
+CREATE TABLE T1 (foo int, bar varchar(10), baz int) WITH INTERFACE Intf;
+CREATE TABLE T2 (foo int, bar varchar(10), bee int) WITH INTERFACE Intf;
+----
+
+
+*Pros:* Less source code (interface code is going to be auto-generated). We can control the interface-to table compatibility during the SQL parsing stage and fail fast in case of incompatibility.
+
+*Cons:* This is not standard SQL, not supported by any editors/tools. We tend to make CelestaSQL as 'standard' as possible. As for table-to-interface compatibility check, it will be done by Java compiler anyway.
