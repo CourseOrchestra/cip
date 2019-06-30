@@ -16,3 +16,6 @@ include::2/CIP2.adoc[leveloffset=+1]
 
 == CIP-3
 include::3/CIP.adoc[leveloffset=+1]
+
+== CIP-4
+include::4/CIP4.adoc[leveloffset=+1]
