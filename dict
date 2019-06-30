@@ -29,3 +29,5 @@ baz
 Intf
 myProc
 CelestaSQL
+startuml
+enduml

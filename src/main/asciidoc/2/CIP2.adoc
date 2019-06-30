@@ -55,9 +55,23 @@ MaterializedViewCursor MaterializedView.getCursor(Context ctx)
 
 methods for getting appropriate cursors of grain elements.
 
+It should be noted that currently class `Table` can both represent tables with and without write access who are distinguished by `Table.isReadOnly()` property that returns `true` for read-only tables and `false` otherwise. Read-only tables in turn are using `ReadOnlyTableCursor` as a base class for their cursors. It is proposed to extend the table class hierarchy by including a separate `ReadOnlyTable` class, and have both `Table` and `ReadOnlyTable` be inherited from `BasicTable`:
+
+.Tables class hierarchy    
+[plantuml, cursors, png]
+----
+@startuml
+DataGrainElement <|-- BasicTable
+BasicTable <|-- Table
+BasicTable <|-- ReadOnlyTable
+@enduml
+----
+
+`Table.isReadOnly()` property should be marked as deprecated and return always `false`.
+
 == Compatibility, Deprecation, and Migration Plan
 
-Since API is extended backwards compatibility is fully preserved.
+Since API is extended backwards compatibility is preserved.
 
 Methods for working with meta-information in Celesta already exist:
 
