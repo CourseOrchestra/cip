@@ -1,0 +1,48 @@
+== Metadata
+[cols="1h,1"]
+|===
+| CIP
+| 4
+
+| Title
+| Field constants in generated cursor classes
+
+| Author
+//link to GitHub user page
+| link:https://github.com/packpaul[packpaul]
+
+
+| Created
+| 2019-06-30
+
+
+| Status
+| discussion
+
+| Discussion
+//link to Google Group discussion thread
+| https://groups.google.com/forum/#!topic/celesta-dev/2ScUhSqng8w
+
+
+| JIRA
+|
+
+|===
+
+== Motivation
+
+When working with generated Celesta cursors developer have to indicate cursor fields as string literals, eg. `FooCursor.setRange("bar_open", true)`, which is fragile when the corresponding field of the grain is renamed. So it'd be nice having all grain fields be defined as constants in the generated cursors.
+
+== Proposed Changes
+
+`ru.curs.celesta.plugin.maven.CursorGenerator` has to be changed to engage the changes.
+
+== Compatibility, Deprecation, and Migration Plan
+
+None
+
+Accompanying method `BasicCursor.setFieldValue(String fieldName, Object value)` is proposed in https://courseorchestra.github.io/cip/#_cip_2[CIP2].
+
+== Rejected Alternatives
+
+None
