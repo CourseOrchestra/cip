@@ -35,6 +35,8 @@ Sometimes it is useful to have some of the cursor classes implement the common i
 
 == Proposed Changes
 
+=== 1. Use Celestadoc to mark the cursor interfaces
+
 Add the possibility to mark the needed interfaces in CelestaDoc, like following:
 
 [source,sql]
@@ -67,7 +69,29 @@ interface Intf {
 }
 ----
 
-Users then may use intersection types to write the 'universal procedures', like
+=== 2. Introduce interfaces for BasicCursor and Cursor
+
+Extract all public methods from `BasicCursor` into `BasicCursorInterface` and `Cursor` into `CursorInterface`, make these interfaces publicly available in the same package with `Cursor` and `BasicCursor`:
+
+.Cursor class and interface hierarchy    
+[plantuml, cursorinterface, png]
+----
+@startuml
+
+class BasicCursor
+class Cursor
+interface BasicCursorInterface
+interface CursorInterface
+BasicCursor <|- Cursor
+BasicCursorInterface <|- CursorInterface
+CursorInterface <|.. Cursor
+BasicCursorInterface <|.. BasicCursor
+@enduml
+----
+
+=== Usage examples
+
+If two or more cursors implement the same interface, users then may use intersection types to write the 'universal procedures', like
 
 [source, java]
 ----
@@ -76,6 +100,8 @@ Users then may use intersection types to write the 'universal procedures', like
     cursor.getFoo(); //inherited from Intf
 }
 ----
+
+If a shared interface is inherited from `BasicCursorInterface` or `CursorInterface`, then there is no need in intersection types. We plan to use these interfaces in Lyra project.
 
 == Compatibility, Deprecation, and Migration Plan
 
