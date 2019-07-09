@@ -17,7 +17,7 @@
 
 
 | Status
-| voting
+| implementation
 
 | Discussion
 //link to Google Group discussion thread
@@ -70,7 +70,7 @@ BasicTable <|-- ReadOnlyTable
 
 == Compatibility, Deprecation, and Migration Plan
 
-`Table.isReadOnly()` property should be marked as deprecated and return always `false`.
+`Table.isReadOnly()` property should be marked as deprecated and should always return `false`.
 
 Methods for working with meta-information in Celesta already exist:
 
