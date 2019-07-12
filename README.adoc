@@ -10,4 +10,4 @@ CIPs are the primary mechanism for proposing major new
 features, for collecting community input on an issue, and for
 documenting the design decisions that have gone into Celesta.
 
-See link:cip/1.adoc[CIP-1] for a description of CIPs and the CIP process.
+See link:https://courseorchestra.github.io/cip/#_cip_1[CIP-1] for a description of CIPs and the CIP process.
