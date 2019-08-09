@@ -35,14 +35,20 @@ When working with generated Celesta cursors developer have to indicate cursor fi
 
 == Proposed Changes
 
-`ru.curs.celesta.plugin.maven.CursorGenerator` has to be changed to engage the changes.
+1. Make `Column` class parameterized by the type of its value (`Column<T>`), and rewrite each of its descendats the following way: `IntegerColumn extends Column<Integer>`, `StringColumn extends Column<String>` etc.
+
+2. Define all the columns of the table in the respective `final static` constants of the Cursor. Fill them in static initializer. 
+
+3. Make `setRange` and `setFilter` methods parameterized and use the type capture, e. g.:
+
+`<T> void setRange(Column<? super T> column, T from, T to)`
+
+This will give us full type checking for `setRange` and `setFilter`.
 
 == Compatibility, Deprecation, and Migration Plan
 
-None
-
-Accompanying method `BasicCursor.setFieldValue(String fieldName, Object value)` is proposed in https://courseorchestra.github.io/cip/#_cip_2[CIP2].
+None. Leave old versions of `setRange` and `setFilter` in the `BasicCursor` along with new ones.
 
 == Rejected Alternatives
 
-None
+Having all the table fields' names defined as constants in the generated cursors -- better than nothing, but still does not provide us with strict static checking.
