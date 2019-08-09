@@ -35,7 +35,7 @@ When working with generated Celesta cursors developer have to indicate cursor fi
 
 == Proposed Changes
 
-1. Make `Column` class parameterized by the type of its value (`Column<T>`), and rewrite each of its descendats the following way: `IntegerColumn extends Column<Integer>`, `StringColumn extends Column<String>` etc.
+1. Make `Column` class parameterized by the type of its value (`Column<T>`), and rewrite each of its descendants the following way: `IntegerColumn extends Column<Integer>`, `StringColumn extends Column<String>` etc.
 
 2. Define all the columns of the table in the respective `final static` constants of the Cursor. Fill them in static initializer. 
 
