@@ -5,7 +5,7 @@
 | 4
 
 | Title
-| Field constants in generated cursor classes
+| Type checking for setRange/setFilter
 
 | Author
 //link to GitHub user page
@@ -17,7 +17,7 @@
 
 
 | Status
-| discussion
+| implementation
 
 | Discussion
 //link to Google Group discussion thread
@@ -25,7 +25,7 @@
 
 
 | JIRA
-|
+| link:https://jira.curs.ru/browse/PK-244[PK-244]
 
 |===
 
