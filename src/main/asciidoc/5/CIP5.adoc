@@ -1,0 +1,78 @@
+== Metadata
+[cols="1h,1"]
+|===
+| CIP
+| 5
+
+| Title
+| Multiple Celesta instances support and score namespaces filtering
+
+| Author
+//link to GitHub user page
+| link:https://github.com/packpaul[packpaul]
+
+
+| Created
+| 2019-09-09
+
+
+| Status
+| discussion
+
+| Discussion
+//link to Google Group discussion thread
+| N/A
+
+
+| JIRA
+| N/A
+
+|===
+
+== Motivation
+
+Currently link:https://spring.io/projects/spring-boot[Spring Boot] based projects can only use a single instance of Celesta which significantly restricts the applicability of Celesta in data handling and migration for other RDB data sources. As a workaround additional Celesta instances have to be explicitly provided for example as spring beans and be managed manually. 
+
+== Proposed Changes
+
+* Enhance  link:https://github.com/CourseOrchestra/spring-boot-starter-celesta[spring-boot-starter-celesta] so that configuration
+
+[source,yaml]
+----
+celesta:
+  ... # configuration for default data source
+  datasources:
+    - name: 1st_data_source
+      ... # configuration for 1st_data_source
+    - name: 2nd_data_source
+      ... # configuration for 2nd_data_source
+    ...
+----
+
+could be accepted.
+
+* Make annotation `@CelestaTransaction` parameterizable with a data source name, e.g. `@CelestaTransaction("2nd_data_source")`. If such parameter is missing assume the default Celesta instance is used.
+
+* Introduce additional Celesta properties: `score.include` and `score.exclude` that would take a list of namespaces (dot-separated path to a grain sql-file(s)) to include/exclude a single or a group of grain sql-files.
+
+[source,properties]
+----
+score.include=ds1.** # include all grain sql-files from 'ds1' namespace recursively
+
+score.exclude=ds1.seq,ds1.test.* # exclude 'ds1/seq.sql' and 'ds1/test/*.sql' but leave e.g. 'ds1/test/important/**'
+----
+
+`score.exclude` has precedence over `score.include`.
+
+[NOTE]
+====
+When having several data sources it is important not to mix up different grains for different data sources hence these properties are needed.
+====
+
+== Compatibility, Deprecation, and Migration Plan
+
+None.
+
+== Rejected Alternatives
+
+None.
