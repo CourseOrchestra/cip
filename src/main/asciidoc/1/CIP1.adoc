@@ -58,7 +58,7 @@ Last but not the least: we need a resilient process for Celesta development, not
 
 4. After submitting the CIP, the author of the CIP should start the discussion, by writing approximately the following to https://groups.google.com/forum/#!forum/celesta-dev/ group: 'Hello, I would like to start a discussion for <insert the link to CIP here>. The status of the CIP should be set to *discussion*. Any person can join the discussion.
 
-5. There are to ways to carry out the discussion of CIP:
+5. There are two ways to carry out the discussion of CIP:
 * via email on `celesta-dev` group in replies to the initial letter
 * collective Skype/Hangouts call, with concise follow-up sent to `celesta-dev` group. NB: *it is obligatory to send a follow-up for each call* to `celesta-group`, so that any decision made is documented.
 

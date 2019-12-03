@@ -1,0 +1,217 @@
+== Metadata
+[cols="1h,1"]
+|===
+| CIP
+| 6
+
+| Title
+| Call context factory support for simplifying code in Spring Boot based applications
+
+| Author
+//link to GitHub user page
+| link:https://github.com/packpaul[packpaul]
+
+
+| Created
+| 2019-12-03
+
+
+| Status
+| discussion
+
+| Discussion
+//link to Google Group discussion thread
+| N/A
+
+
+| JIRA
+| N/A
+
+|===
+
+== Motivation
+
+When writing link:https://spring.io/projects/spring-boot[Spring Boot] based application with a Celesta
+integration based on link:https://github.com/CourseOrchestra/spring-boot-starter-celesta[spring-boot-starter-celesta]
+project, a very common coding pattern occurs:
+
+[source,java]
+----
+import ru.curs.celesta.SystemCallContext;
+...
+@RestController
+@RequestMapping(API_PATH)
+public class DemoController {
+    static final String API_PATH = "/demo";
+    static final String CYMBALS_PATH = "/cymbals";
+    static final String GET_SPEC_PATH = "/getspec";
+    ...
+
+    @GetMapping(path = CYMBALS_PATH + GET_SPEC_PATH)
+    public String getSpecification() {
+        return cymbalsService.getSpecification(new SystemCallContext());
+    }
+    ...
+}
+----
+
+[source,java]
+----
+import ru.curs.celesta.CallContext;
+...
+/**
+ * Service for integration with Cymbals library.
+ */
+public interface CymbalsService {
+    ...
+    String getSpecification(CallContext callContext);
+    ...
+}
+----
+
+[source,java]
+----
+import ru.curs.celesta.CallContext;
+...
+@Service
+public class CymbalsServiceImpl implements CymbalsService {
+    ...
+    @Override
+    @CelestaTransaction
+    public String getSpecification(CallContext callContext) {
+        CalcSpecCursor cursor = new CalcSpecCursor(callContext);
+        ...
+    }
+    ...
+}
+----
+
+which clutters service API code with `CallContext` parameters and makes the architecture cohesion inconsistent, that is the decision what persistency implementation to use should be taken in business layer (services) and not in presentation one (controllers).
+
+As a rigid workaround the following could be used:
+
+[source,java]
+----
+public interface QueryService {
+    /**
+     * Returns all queries.
+     *
+     * @return
+     */
+    List<Query> getQueries();
+    ...
+}
+----
+
+[source,java]
+----
+import ru.curs.celesta.SystemCallContext;
+...
+public class QueryServiceImpl implements QueryService {
+    ...
+    @Autowired
+    private QueryServiceImpl self;
+    ...
+    @Override
+    public List<Query> getQueries() {
+        return self.getQueries(new SystemCallContext());
+    }
+    @CelestaTransaction
+    List<Query> getQueries(CallContext cctx) {
+        try(QueryCursor cursor = new QueryCursor(cctx)) {
+        ...
+        }
+    }
+    ...
+}
+----
+
+what has the disadvantages:
+
+a) Two methods per each service method should are added that again results in a readability digression.
+
+b) No strategy for Celesta's call context creation can be chosen.
+
+== Proposed Changes
+
+It is proposed to introduce the so called `CallContextFactory` where all needed call contexts would be instantiated for all methods annotated with `@CelestaTransaction` without `CallContext` parameter:
+
+[source,java]
+----
+public interface CallContextFactory {
+    CallContext callContext();
+}
+----
+
+[source,java]
+----
+import ru.curs.celesta.CallContext;
+import ru.curs.celesta.CallContextFactory;
+...
+public class QueryServiceImpl implements QueryService {
+    ...
+    @Autowired
+    private CallContextFactory cctxf;
+    ...
+    @Override
+    @CelestaTransaction
+    public List<Query> getQueries() {
+        // Here a default factory provided by Celesta is used whereby
+        // the strategy of call context instantiation is taken f.g. from
+        // Celesta properties, or our implementation
+        // (CallContextFactoryImpl - see below) if provided.
+
+        CallContext cctx = cctxf.callContext();
+        try(QueryCursor cursor = new QueryCursor(cctx)) {
+            ...
+        }
+    }
+    ...
+}
+----
+
+[source,java]
+----
+/*
+ * (optional)
+ */
+import ru.curs.celesta.CallContext;
+import ru.curs.celesta.CallContextFactory;
+...
+@Primary
+@Component
+public class CallContextFactoryImpl extends CallContextFactoryBase implements CallContextFactory {
+    private final String OUR_USER = ...
+
+    @Override
+    protected CallContext createCallContext() {
+        return new CallContext(OUR_USER);
+    }
+}
+----
+
+where
+
+[source,java]
+----
+import ru.curs.celesta.CallContext;
+import ru.curs.celesta.CallContextFactory;
+...
+
+@Component
+public abstract class CallContextFactoryBase implements CallContextFactory {
+    ...
+    public final CallContext callContext() {
+        // TODO: return activated call context on a per thread basis.
+    }
+    ...
+}
+----
+
+== Compatibility, Deprecation, and Migration Plan
+
+Current implementation of `CelestaTransactionAspect` implies that if there is no parameter of `CelestaContext` type the method is just run without any transaction. In the proposed implementation some transaction would be though opened provided the call context instantiation strategy is indicated or a custom `CallContextFactoryImpl` is given.
+
+== Rejected Alternatives
+
+None.
