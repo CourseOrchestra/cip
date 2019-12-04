@@ -1,8 +1,6 @@
 :source-highlighter: highlightjs
 :toc: left
 
-image:https://travis-ci.org/CourseOrchestra/cip.svg?branch=master["Build Status", link="https://travis-ci.org/CourseOrchestra/cip"]
-
 = Celesta Improvement Process
 
 == Celesta Steering Committee Members
