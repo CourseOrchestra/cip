@@ -1,5 +1,6 @@
 :source-highlighter: highlightjs
 :toc: left
+:icons: font
 
 = Celesta Improvement Process
 
