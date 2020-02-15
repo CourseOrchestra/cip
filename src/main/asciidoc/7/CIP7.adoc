@@ -1,0 +1,198 @@
+== Metadata
+[cols="1h,1"]
+|===
+| CIP
+| 7
+
+| Title
+| Explicit numbering of option fields 
+
+| Author
+//link to GitHub user page
+| link:https://github.com/packpaul[packpaul]
+
+
+| Created
+| 2020-02-14
+
+
+| Status
+| discussion
+
+| Discussion
+//link to Google Group discussion thread
+| N/A
+
+
+| JIRA
+| N/A
+
+|===
+
+== Motivation
+
+It is pretty convenient to use option fields for automatic generation of enumeratable constants, and later use them in the code
+which makes it more comprehensive and error resilient. For example grain snippet:
+
+[source,java]
+----
+CREATE TABLE Message (
+  ...
+  /** {option: [DRAFT, SAVED, SENT, QUEUED, RESPONDED, RECEIVED]} */
+  status INT NOT NULL,
+  ...
+}
+----
+
+would produce inner static class
+
+[source,java]
+----
+public final class MessageCursor extends Cursor implements Iterable<MessageCursor> {
+    ...
+    public static final class Status {
+        public static final Integer DRAFT = 0;
+
+        public static final Integer SAVED = 1;
+
+        public static final Integer SENT = 2;
+
+        public static final Integer QUEUED = 3;
+
+        public static final Integer RESPONDED = 4;
+
+        public static final Integer RECEIVED = 5;
+
+        ...
+    }
+    ...
+}
+----
+
+that looks fine for a freshly written project. Later on however when the project starts to evolve and some new statuses (think option fields)
+start to appear and old ones disappear and the grain could end up looking like:
+
+[source,java]
+----
+CREATE TABLE Message (
+  ...
+  /** {option: [DRAFT, SAVED, SENT, QUEUED, RESPONDED_DEPRICATED, RECEIVED, NEW]} */
+  status INT NOT NULL,
+  ...
+}
+----
+
+which neither reveal the real set of statuses in use nor are the message statuses ordered as they would appear in the message life-cycle.
+
+The second concern is about how to codify statuses starting for example from 100, so that the generation looked like:
+
+[source,java]
+----
+public final class MessageCursor extends Cursor implements Iterable<MessageCursor> {
+    ...
+    public static final class Status {
+        public static final Integer DRAFT = 100;
+
+        public static final Integer SAVED = 101;
+
+        public static final Integer SENT = 102;
+
+        public static final Integer QUEUED = 103;
+
+        public static final Integer RESPONDED = 104;
+
+        public static final Integer RECEIVED = 105;
+
+        ...
+    }
+    ...
+}
+----
+
+== Proposed Changes
+
+It is proposed to extend the definition syntax of option fields. In two ways:
+
+1) Indicate explicitly codes for option field in round brackets, f.g.:
+
+[source,java]
+----
+CREATE TABLE Message (
+  ...
+  /** {option: [DRAFT(100), SAVED, SENT, QUEUED, RESPONDED(204), RECEIVED]} */
+  status INT NOT NULL,
+  ...
+}
+----
+
+would be rendered as:
+
+[source,java]
+----
+public final class MessageCursor extends Cursor implements Iterable<MessageCursor> {
+    ...
+    public static final class Status {
+        public static final Integer DRAFT = 100;
+
+        public static final Integer SAVED = 101;
+
+        public static final Integer SENT = 102;
+
+        public static final Integer QUEUED = 103;
+
+        public static final Integer RESPONDED = 204;
+
+        public static final Integer RECEIVED = 205;
+
+        ...
+    }
+    ...
+}
+----
+
+2) Let one or more option fields be simply left out, and thus preserve existing codes like it is done in **MS NAV**
+
+[source,java]
+----
+CREATE TABLE Message (
+  ...
+  /** {option: [DRAFT, SAVED, SENT, QUEUED, , RECEIVED, NEW]} */
+  status INT NOT NULL,
+  ...
+}
+----
+
+would produce inner static class
+
+[source,java]
+----
+public final class MessageCursor extends Cursor implements Iterable<MessageCursor> {
+    ...
+    public static final class Status {
+        public static final Integer DRAFT = 0;
+
+        public static final Integer SAVED = 1;
+
+        public static final Integer SENT = 2;
+
+        public static final Integer QUEUED = 3;
+
+        public static final Integer RESPONDED = 4;
+
+        public static final Integer RECEIVED = 5;
+
+        public static final Integer NEW = 6;
+
+        ...
+    }
+    ...
+}
+----
+
+== Compatibility, Deprecation, and Migration Plan
+
+The proposed changes in the API are backwards compatible with grain syntax of existing solutions.
+
+== Rejected Alternatives
+
+None.
