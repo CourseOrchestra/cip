@@ -76,7 +76,7 @@ start to appear and old ones disappear and the grain could end up looking like:
 ----
 CREATE TABLE Message (
   ...
-  /** {option: [DRAFT, SAVED, SENT, QUEUED, RESPONDED_DEPRICATED, RECEIVED, NEW]} */
+  /** {option: [DRAFT, SAVED, SENT, QUEUED, RESPONDED_DEPRECATED, RECEIVED, NEW]} */
   status INT NOT NULL,
   ...
 }
