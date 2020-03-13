@@ -21,7 +21,7 @@
 
 | Discussion
 //link to Google Group discussion thread
-| N/A
+| link:https://groups.google.com/forum/#!topic/celesta-dev/AmFhZmCKIx8[CIP-7]
 
 
 | JIRA
